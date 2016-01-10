@@ -76,45 +76,44 @@ for r in regions:
     measures = r["measures"]
     l = len(measures)
     print("Checking for repeats in {} measure range {}:{}".format(l, start + 1, start + l))
-    p = 0
-    while p < l:
+    s = 0
+    while s < l:
 
-        rl = 0
+        rl = 1
         rc = 1
 
-        # while it's possible to grow match
-        while p + 2 * rc * rl <= l:
-            s = p
-            t = s + rc * rl + 1
+        e = s + 1
+
+        # while it's possible to find a repeat
+        while s + 2 * (e - s) <= l:
 
             # skip until first measure re-occurs
-            while t < l and not isMeasureEqual(measures[s], measures[t]):
-                t = t + 1
+            while e < l and not isMeasureEqual(measures[s], measures[e]):
+                e = e + 1
 
-            candRl = t - s
+            candRl = e - s
             candRc = getRepeatCount(measures, s, candRl)
 
             if candRc > 1:
                 print("  Found {} time repeat of length {} at {}".format(candRc, candRl, start + s + 1))
-                rc = candRc
                 rl = candRl
+                rc = candRc
+                e = s + rl * rc + 1
                 # try to grow further
 
             else:
-                if rc == 1:
-                    # nothing found, grow initial pattern
-                    rl = t - s
-                else:
-                    break
+                # nothing found, grow initial pattern
+                e = e + 1
+                if e >= l: break
 
-        print("* Using {} time repeat of length {} at {}".format(rc, rl, start + p + 1))
+        print("* Using {} time repeat of length {} at {}".format(rc, rl, start + s + 1))
         # mark repeat if needed
         if rc > 1:
-            measures[p].header.isRepeatOpen = True
-            measures[p + rl - 1].header.repeatClose = rc
+            measures[s].header.isRepeatOpen = True
+            measures[s + rl - 1].header.repeatClose = rc
         for i in range(rl):
-            flattened.measures.append(measures[p + i])
-        p = p + rl * rc
+            flattened.measures.append(measures[s + i])
+        s = s + rl * rc
 
 flattened.number = 1
 song.tracks = []
