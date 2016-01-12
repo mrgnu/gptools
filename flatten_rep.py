@@ -60,6 +60,7 @@ flattened = copy.deepcopy(tracks[0])
 flattened.measures = []
 flattened.name = "Flattened"
 
+# merge tracks, consecutive measures from same track are considered a region
 last = None
 regions = []
 for i in range(len(tracks[0].measures)):
@@ -79,6 +80,7 @@ for i in range(len(tracks[0].measures)):
 
     regions[-1]["measures"].append(measure)
 
+# attempt to detect and collapse repeats within regions
 for r in regions:
     start    = r["start"]
     measures = r["measures"]
