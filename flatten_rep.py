@@ -24,21 +24,24 @@ def isMeasureEmpty(measure):
             if beat.notes: return False
     return True
 
-def isMeasureEqual(m1, m2):
+def areBeatsEqual(b1, b2):
+    for f in ["octave", "notes", "effect", "duration", "status"]:
+        if not b1.__dict__[f] == b2.__dict__[f]: return False
+    return True
+
+def areMeasuresEqual(m1, m2):
     if (len(m1.voices) != len(m2.voices)): return False
     for v1, v2 in zip(m1.voices, m2.voices):
         if (len(v1.beats) != len(v2.beats)): return False
         for b1, b2 in zip(v1.beats, v2.beats):
-            if (len(b1.notes) != len(b2.notes)): return False
-            for n1, n2 in zip(b1.notes, b2.notes):
-                if n1 != n2: return False
+            if not areBeatsEqual(b1, b2): return False
     return True
 
 def getRepeatCount(region, start, l):
     n = 1
     while start + (n + 1) * l <= len(region):
         for i in range(l):
-            if not isMeasureEqual(region[start + i], region[start + i + n * l]):
+            if not areMeasuresEqual(region[start + i], region[start + i + n * l]):
                 return n
         n = n + 1
     return n
@@ -98,7 +101,7 @@ for r in regions:
         while s + 2 * (e - s) <= l:
 
             # skip until first measure re-occurs
-            while e < l and not isMeasureEqual(measures[s], measures[e]):
+            while e < l and not areMeasuresEqual(measures[s], measures[e]):
                 e = e + 1
 
             candRl = e - s
