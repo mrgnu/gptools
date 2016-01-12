@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 import sys
+import guitarpro
 
 if len(sys.argv) != 3:
-    print("This script will add a D5 string as new first string for all " \
+    print("This script will add a D5 string as new first string for all "
           "6-string tracks.")
     print("Usage:", sys.argv[0], "<infile> <outfile>", file=sys.stderr)
     sys.exit(1)
 
-import guitarpro
-
 src = sys.argv[1]
 dst = sys.argv[2]
 
-print ("Parsing", src)
+print("Parsing", src)
 song = guitarpro.parse(src)
 
 print("Processing", song.title)

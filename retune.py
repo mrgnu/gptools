@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 import sys
+import guitarpro
 
 if len(sys.argv) != 3:
-    print("This script will re-tune 3rd string from E4 to F4 on 7-string tracks as " \
-          "needed. Notes on empty 3rd string will be marked as fretted on 35th fret.")
+    print("This script will re-tune 3rd string from E4 to F4 on 7-string "
+          "tracks as needed. Notes on empty 3rd string will be marked as "
+          "fretted on 35th fret.")
     print("Usage:", sys.argv[0], "<infile> <outfile>", file=sys.stderr)
     sys.exit(1)
-
-import guitarpro
 
 src = sys.argv[1]
 dst = sys.argv[2]
 
-print ("Parsing", src)
+print("Parsing", src)
 song = guitarpro.parse(src)
 
 print("Processing", song.title)
@@ -32,7 +32,8 @@ for track in song.tracks:
                     if note.string != 3:
                         continue
                     if note.value == 0:
-                        print("  WARNING: failed to re-tune note in measure", measure.number)
+                        print("  WARNING: failed to re-tune note in measure",
+                              measure.number)
                         note.value = 35
                     else:
                         note.value = note.value - 1

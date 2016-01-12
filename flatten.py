@@ -5,10 +5,11 @@ import copy
 import guitarpro
 
 if len(sys.argv) <= 3:
-    print("This script will combine several tracks into one. " \
-          "Pass the (0-based) index of the tracks to combine, " \
+    print("This script will combine several tracks into one. "
+          "Pass the (0-based) index of the tracks to combine, "
           "in order of priority.")
-    print("Usage:", sys.argv[0], "<infile> <outfile> <track index>+", file=sys.stderr)
+    print("Usage: {} <infile> <outfile> <track index>+".format(sys.argv[0]),
+          file=sys.stderr)
 
     if len(sys.argv) >= 2:
         song = guitarpro.parse(sys.argv[1])
@@ -16,6 +17,7 @@ if len(sys.argv) <= 3:
             print("* track {}: {}".format(idx, track.name))
 
     sys.exit(1)
+
 
 def isMeasureEmpty(measure):
     for voice in measure.voices:
@@ -26,7 +28,7 @@ def isMeasureEmpty(measure):
 src = sys.argv[1]
 dst = sys.argv[2]
 
-print ("Parsing", src)
+print("Parsing", src)
 song = guitarpro.parse(src)
 
 print("Processing", song.title)
@@ -56,7 +58,7 @@ for i in range(len(tracks[0].measures)):
         measure.voices[0].beats[0].text = text
 
     flattened.measures.append(measure)
-    
+
 flattened.number = 1
 song.tracks = []
 song.addTrack(flattened)

@@ -5,11 +5,12 @@ import copy
 import guitarpro
 
 if len(sys.argv) <= 3:
-    print("This script will combine several tracks into one, " \
-          "after which an attempt to detect and collapse repeats is made. " \
-          "Pass the (0-based) index of the tracks to combine, " \
+    print("This script will combine several tracks into one, "
+          "after which an attempt to detect and collapse repeats is made. "
+          "Pass the (0-based) index of the tracks to combine, "
           "in order of priority.")
-    print("Usage:", sys.argv[0], "<infile> <outfile> <track index>+", file=sys.stderr)
+    print("Usage: {} <infile> <outfile> <track index>+".format(sys.argv[0]),
+          file=sys.stderr)
 
     if len(sys.argv) >= 2:
         song = guitarpro.parse(sys.argv[1])
@@ -18,16 +19,19 @@ if len(sys.argv) <= 3:
 
     sys.exit(1)
 
+
 def isMeasureEmpty(measure):
     for voice in measure.voices:
         for beat in voice.beats:
             if beat.notes: return False
     return True
 
+
 def areBeatsEqual(b1, b2):
     for f in ["octave", "notes", "effect", "duration", "status"]:
         if not b1.__dict__[f] == b2.__dict__[f]: return False
     return True
+
 
 def areMeasuresEqual(m1, m2):
     if (len(m1.voices) != len(m2.voices)): return False
@@ -37,11 +41,13 @@ def areMeasuresEqual(m1, m2):
             if not areBeatsEqual(b1, b2): return False
     return True
 
+
 def getRepeatCount(region, start, l):
     n = 1
     while start + (n + 1) * l <= len(region):
         for i in range(l):
-            if not areMeasuresEqual(region[start + i], region[start + i + n * l]):
+            if not areMeasuresEqual(region[start + i],
+                                    region[start + i + n * l]):
                 return n
         n = n + 1
     return n
@@ -49,7 +55,7 @@ def getRepeatCount(region, start, l):
 src = sys.argv[1]
 dst = sys.argv[2]
 
-print ("Parsing", src)
+print("Parsing", src)
 song = guitarpro.parse(src)
 
 print("Processing", song.title)
@@ -75,7 +81,7 @@ for i in range(len(tracks[0].measures)):
 
     # set track title when changing
     if last != measure.track:
-        regions.append({ "start": i, "measures": []})
+        regions.append({"start": i, "measures": []})
         last = measure.track
         text = guitarpro.base.BeatText()
         text.value = last.name
@@ -88,7 +94,8 @@ for r in regions:
     start    = r["start"]
     measures = r["measures"]
     l = len(measures)
-    print("Checking for repeats in {} measure range {}:{}".format(l, start + 1, start + l))
+    print("Checking for repeats in {} measure range {}:{}".format(
+        l, start + 1, start + l))
     s = 0
     while s < l:
 
@@ -108,7 +115,8 @@ for r in regions:
             candRc = getRepeatCount(measures, s, candRl)
 
             if candRc > 1:
-                print("  Found {} time repeat of length {} at {}".format(candRc, candRl, start + s + 1))
+                print("  Found {} time repeat of length {} at {}".format(
+                    candRc, candRl, start + s + 1))
                 rl = candRl
                 rc = candRc
                 e = s + rl * rc + 1
@@ -119,7 +127,8 @@ for r in regions:
                 e = e + 1
                 if e >= l: break
 
-        print("* Using {} time repeat of length {} at {}".format(rc, rl, start + s + 1))
+        print("* Using {} time repeat of length {} at {}".format(
+            rc, rl, start + s + 1))
         # mark repeat if needed
         if rc > 1:
             measures[s].header.isRepeatOpen = True
