@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 
 import sys
-
-if len(sys.argv) <= 3:
-    print("This script will combine several tracks into one. Pass the (0-based) index of the tracks to combine, in order of priority.")
-    print("Usage:", sys.argv[0], "<infile> <outfile> <track index>+", file=sys.stderr)
-    sys.exit(1)
-
 import copy
 import guitarpro
+
+if len(sys.argv) <= 3:
+    print("This script will combine several tracks into one, " \
+          "after which an attempt to detect and collapse repeats is made. " \
+          "Pass the (0-based) index of the tracks to combine, " \
+          "in order of priority.")
+    print("Usage:", sys.argv[0], "<infile> <outfile> <track index>+", file=sys.stderr)
+
+    if len(sys.argv) >= 2:
+        song = guitarpro.parse(sys.argv[1])
+        for idx, track in enumerate(song.tracks):
+            print("* track {}: {}".format(idx, track.name))
+
+    sys.exit(1)
 
 def isMeasureEmpty(measure):
     for voice in measure.voices:
@@ -62,11 +70,11 @@ for i in range(len(tracks[0].measures)):
             break
 
     # set track title when changing
-    if last != measure.track.name:
+    if last != measure.track:
         regions.append({ "start": i, "measures": []})
-        last = measure.track.name
+        last = measure.track
         text = guitarpro.base.BeatText()
-        text.value = last
+        text.value = last.name
         measure.voices[0].beats[0].text = text
 
     regions[-1]["measures"].append(measure)
