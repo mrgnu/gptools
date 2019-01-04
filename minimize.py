@@ -44,8 +44,7 @@ if __name__ == "__main__":
     # fold repeats and add to track
     for r in regions: flattened.measures.extend(utils.fold_repeats(r))
 
-    song.tracks = []
-    song.addTrack(flattened)
+    song.tracks = [flattened]
 
     print("Writing to", dst)
     guitarpro.write(song, dst)

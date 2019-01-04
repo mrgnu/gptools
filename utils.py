@@ -9,7 +9,7 @@ class Region:
         self.start_index = start_index
         self.measures = []
 
-    def add_measure(self, measure: guitarpro.base.Measure):
+    def add_measure(self, measure: guitarpro.models.Measure):
         self.measures.append(measure)
 
 
@@ -49,7 +49,7 @@ def get_repeat_count(region: Region, start: int, l: int) -> int:
     return n
 
 
-def flatten_to_regions(song: guitarpro.base.Song,
+def flatten_to_regions(song: guitarpro.models.Song,
                        indices: [int]) -> [Region]:
     """Iterates over song, flattening tracks in order of priority. Returns
     a list of regions.
@@ -82,7 +82,7 @@ def flatten_to_regions(song: guitarpro.base.Song,
         if last != measure.track:
             regions.append(Region(i))
             last = measure.track
-            text = guitarpro.base.BeatText()
+            text = guitarpro.models.BeatText()
             text.value = last.name
             measure.voices[0].beats[0].text = text
 
@@ -91,7 +91,7 @@ def flatten_to_regions(song: guitarpro.base.Song,
     return regions
 
 
-def fold_repeats(r: Region) -> [guitarpro.base.Measure]:
+def fold_repeats(r: Region) -> [guitarpro.models.Measure]:
     out = []
 
     l = len(r.measures)
