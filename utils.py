@@ -72,6 +72,23 @@ def add_beat_comment(track:      guitarpro.models.Track,
     track.measures[measure].voices[0].beats[0].text = text
 
 
+def add_marker_comment(track:      guitarpro.models.Track,
+                       measureIdx: int,
+                       comment:    str) -> None:
+    """Adds a new marker at 'measure' (0-based) with title 'comment'.
+    If a marker already exists, appends 'comment'.
+    """
+    measure = track.measures[measureIdx]
+    header  = measure.header
+    marker  = header.marker
+    if (marker):
+        marker.title = "{} - {}".format(marker.title, comment)
+    else:
+        marker = guitarpro.models.Marker(comment)
+        header.marker = marker
+    track.song.measureHeaders[measureIdx] = header
+
+
 def flatten_to_regions(song: guitarpro.models.Song,
                        indices: [int]) -> [Region]:
     """Iterates over song, flattening tracks in order of priority. Returns
