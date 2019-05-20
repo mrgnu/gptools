@@ -64,6 +64,14 @@ def get_repeat_count(region: Region, start: int, l: int) -> int:
     return n
 
 
+def add_beat_comment(track:      guitarpro.models.Track,
+                     measureIdx: int,
+                     comment:    str) -> None:
+    text = guitarpro.models.BeatText()
+    text.value = comment
+    track.measures[measure].voices[0].beats[0].text = text
+
+
 def flatten_to_regions(song: guitarpro.models.Song,
                        indices: [int]) -> [Region]:
     """Iterates over song, flattening tracks in order of priority. Returns
@@ -93,13 +101,12 @@ def flatten_to_regions(song: guitarpro.models.Song,
                 measure = track.measures[i]
                 break
 
-        # set track title when changing
+        # create new region
         if last != measure.track:
             regions.append(Region(i))
             last = measure.track
-            text = guitarpro.models.BeatText()
-            text.value = last.name
-            measure.voices[0].beats[0].text = text
+            # set track title when changing
+            add_beat_comment(last, i, last.name)
 
         regions[-1].add_measure(measure)
 
