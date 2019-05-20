@@ -203,3 +203,18 @@ def fold_repeats(r: Region) -> [guitarpro.models.Measure]:
         out.extend(r.measures[s:s + rl])
         s = s + rl * rc
     return out
+
+def get_marker_range(song:  guitarpro.models.Song,
+                     title: str) -> [int]: # [<first measure>, <last measure>]
+    measureHeaders = song.measureHeaders
+    filtered = list(filter(lambda h: h.marker, measureHeaders))
+    for i in range(len(filtered)):
+        header = filtered[i]
+        if (not header.marker): continue
+        if (header.marker.title == title):
+            firstMeasure = header.number - 1
+            if (i == len(filtered) - 1):
+                lastMeasure = len(measureHeaders) - 1
+            else:
+                lastMeasure = filtered[i + 1].number - 2
+            return [firstMeasure, lastMeasure]
