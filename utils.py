@@ -13,6 +13,21 @@ class Region:
         self.measures.append(measure)
 
 
+def dump_tracks(song: guitarpro.models.Song) -> None:
+    tracks = song.tracks
+    print("{} tracks".format(len(tracks)))
+    for idx, track in enumerate(tracks):
+        print("* track {}: {}".format(idx + 1, track.name))
+
+
+def dump_markers(song: guitarpro.models.Song) -> None:
+    measureHeaders = song.measureHeaders
+    print("markers:")
+    for header in measureHeaders:
+        if (not header.marker): continue
+        print("* {}: {}".format(header.number, header.marker.title))
+
+
 def is_measure_empty(measure):
     for voice in measure.voices:
         for beat in voice.beats:
