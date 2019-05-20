@@ -89,6 +89,32 @@ def add_marker_comment(track:      guitarpro.models.Track,
     track.song.measureHeaders[measureIdx] = header
 
 
+def extract_measures(song: guitarpro.models.Song,
+                     trackIdx:        int,
+                     firstMeasureIdx: int,
+                     lastMeasureIdx:  int) -> [guitarpro.models.Measure]:
+    "Extract measures (0-based, inclusive) from track (0-based), with folding."
+
+    track = song.tracks[trackIdx]
+
+    print("Extracting measures [{}:{}] from track {}"
+          .format(firstMeasureIdx + 1,
+                  lastMeasureIdx  + 1,
+                  track.name))
+
+    # add a comment with start measure and track name
+    add_marker_comment(track,
+                       firstMeasureIdx,
+                       "M:{} {}".format(firstMeasureIdx + 1, track.name))
+
+    # fold repeats
+    region = Region(0)
+    region.measures = track.measures[firstMeasureIdx:lastMeasureIdx + 1]
+    measures = fold_repeats(region)
+
+    return measures
+
+
 def flatten_to_regions(song: guitarpro.models.Song,
                        indices: [int]) -> [Region]:
     """Iterates over song, flattening tracks in order of priority. Returns
